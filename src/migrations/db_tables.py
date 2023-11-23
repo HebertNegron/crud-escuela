@@ -1,22 +1,22 @@
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Float
+from src.utils.database import Base
 
-Base = declarative_base()
+class Alumno(Base):
+    __tablename__ = 'alumnos'
+    # __table_args__ = {'schema': ''}
 
-class User(Base):
-    __tablename__ = 'users'
-
-    id = Column(Integer, primary_key=True)
-    nombres = Column(String(50))
-    apellidos = Column(String(50))
-    matricula = Column(String(10), unique=True)
+    id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
+    nombres = Column(String(50), nullable=False)
+    apellidos = Column(String(50), nullable=False)
+    matricula = Column(String(10), unique=True, nullable=False)
     promedio = Column(Float)
 
 class Profesor(Base):
     __tablename__ = 'profesores'
+    # __table_args__ = {'schema': ''}
 
-    id = Column(Integer, primary_key=True)
-    nombres = Column(String(50))
-    apellidos = Column(String(50))
-    numeroEmpleado = Column(Integer, unique=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    nombres = Column(String(50), nullable=False)
+    apellidos = Column(String(50), nullable=False)
+    numeroEmpleado = Column(Integer, unique=True, nullable=False)
     horasClase = Column(Integer)

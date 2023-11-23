@@ -1,7 +1,7 @@
-from fastapi import APIRouter, HTTPException, status
-from src.models import Alumno
+from fastapi import APIRouter, Depends, HTTPException, status
+from src.migrations.db_tables import Alumno
 from sqlalchemy.orm import Session
-from src.utils.database import engine
+from src.utils.database import get_db
 
 alumnos = APIRouter(
     prefix='/alumnos',
@@ -9,44 +9,50 @@ alumnos = APIRouter(
 )
 
 @alumnos.get("", tags=["Alumnos"])
-def get_alumnos():
-    with Session(engine) as session:
-        alumnos = session.query(Alumno).all()
-        return alumnos
+def get_alumnos(db: Session = Depends(get_db)):
+    alumnos = db.query(Alumno).all()
+    return alumnos
 
-# @alumnos.get("/{id}", tags=["Alumnos"])
-# def get_alumno(id: int):
-#     for alumno in lista_alumnos:
-#         if alumno.id == id:
-#             return alumno
-#     raise HTTPException(
-#             status_code=status.HTTP_404_NOT_FOUND,
-#             detail="Alumno no encontrado"
-#         )
+    
+@alumnos.get("/{id}", tags=["Alumnos"])
+def get_alumno(id: int, db: Session = Depends(get_db)):
+        alumno = db.query(Alumno).filter(Alumno.id == id).first()
+        if alumno:
+            return alumno
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Alumno no encontrado"
+            )
 
-# @alumnos.post("", tags=["Alumnos"], status_code=status.HTTP_201_CREATED)
-# def add_alumno(alumno: Alumno):
-#     lista_alumnos.append(alumno)
-#     return status.HTTP_201_CREATED
+@alumnos.post("", tags=["Alumnos"], status_code=status.HTTP_201_CREATED)
+def add_alumno(alumno: Alumno, db: Session = Depends(get_db)):
+        db.add(alumno)
+        db.commit()
+        db.refresh(alumno)
+        return status.HTTP_201_CREATED
 
-# @alumnos.put("/{id}", tags=["Alumnos"])
-# def update_alumno(id: int, alumno: Alumno):
-#     for i in range(len(lista_alumnos)):
-#         if lista_alumnos[i].id == id:
-#             lista_alumnos[i] = alumno
-#             return status.HTTP_201_CREATED
-#     raise HTTPException(
-#             status_code=status.HTTP_404_NOT_FOUND,
-#             detail="Alumno no encontrado"
-#         )
+@alumnos.put("/{id}", tags=["Alumnos"])
+def update_alumno(id: int, alumno: Alumno, db: Session = Depends(get_db)):
+        alumno_update = db.query(Alumno).filter(Alumno.id == id).first()
+        if alumno_update:
+            alumno_update = alumno
+            return status.HTTP_201_CREATED
+        else:
+            raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Alumno no encontrado"
+                )
 
-# @alumnos.delete("/{id}", tags=["Alumnos"])
-# def delete_alumno(id: int):
-#     for i in range(len(lista_alumnos)):
-#         if lista_alumnos[i].id == id:
-#             lista_alumnos.pop(i)
-#             return status.HTTP_201_CREATED
-#     raise HTTPException(
-#             status_code=status.HTTP_404_NOT_FOUND,
-#             detail="Alumno no encontrado"
-#         )
+@alumnos.delete("/{id}", tags=["Alumnos"])
+def delete_alumno(id: int, db: Session = Depends(get_db)):
+        alumno = db.query(Alumno).filter(Alumno.id == id).first()
+        if alumno:
+            db.delete(alumno)
+            db.commit()
+            return status.HTTP_201_CREATED
+        else:
+            raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Alumno no encontrado"
+                )

@@ -1,4 +1,3 @@
-
 from .person import Person
 
 class Alumno(Person):
