@@ -1,6 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class Person(BaseModel):
     id: int | None = None
-    nombres: str
-    apellidos: str
+    nombres: str = Field('')
+    apellidos: str = Field('')

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import JSONResponse
 from src.migrations.db_tables import Profesor as DBProfesor
 from src.models import Profesor
 from sqlalchemy.orm import Session
@@ -15,7 +16,7 @@ def get_profesores(db: Session = Depends(get_db)):
     profesores = db.query(DBProfesor).all()
     return profesores
 
-@profesores.get("/{id}", tags=["Profesores"])
+@profesores.get("/{id}", tags=["Profesores"], status_code=status.HTTP_200_OK)
 def get_profesor(id: int, db: Session = Depends(get_db)):
     profesor = db.query(DBProfesor).filter(DBProfesor.id == id).first()
     if profesor:
@@ -31,7 +32,10 @@ def add_profesor(profesor: Profesor, db: Session = Depends(get_db)):
     db_profesor = DBProfesor(**profesor.model_dump())
     db.add(db_profesor)
     db.commit()
-    return status.HTTP_201_CREATED
+    return JSONResponse(
+        status_code=status.HTTP_201_CREATED,
+        content={"id": db_profesor.id}
+    )
 
 @profesores.put("/{id}", tags=["Profesores"])
 def update_profesor(id: int, profesor: Profesor, db: Session = Depends(get_db)):
