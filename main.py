@@ -3,7 +3,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 import src.controllers as Controller
 from src.utils.database import engine
-from src.migrations.db_tables import Base
+from src.models import Base
 
 Base.metadata.create_all(bind=engine)
 
@@ -16,15 +16,13 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         content={"detail": exc.errors()},
     )
     
-
 @app.get("/")
 def read_root():
     return {"Proyecto Final": "API de escuela"}
 
-
 app.include_router(
-    Controller.alumnos
+    Controller.students
 )
 app.include_router(
-    Controller.profesores
+    Controller.teachers
 )

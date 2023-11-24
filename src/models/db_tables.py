@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float
 from src.utils.database import Base
 
-class Alumno(Base):
+class DBStudent(Base):
     __tablename__ = 'alumnos'
 
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
@@ -12,7 +12,7 @@ class Alumno(Base):
     fotoPerfilUrl = Column(String(100))
     password = Column(String(50), nullable=False)
 
-class Profesor(Base):
+class DBTeacher(Base):
     __tablename__ = 'profesores'
 
     id = Column(Integer, primary_key=True, autoincrement=True)

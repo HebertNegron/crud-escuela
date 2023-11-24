@@ -1,2 +1,2 @@
-from .alumnos import alumnos
-from .profesores import profesores
+from .students_controller import students
+from .teachers_controller import teachers

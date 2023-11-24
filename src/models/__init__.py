@@ -1,3 +1,3 @@
-from .alumno import Alumno
-from .profesor import Profesor
-from .person import Person
+from .db_tables import DBStudent
+from .db_tables import DBTeacher
+from .db_tables import Base

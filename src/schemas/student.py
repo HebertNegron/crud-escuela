@@ -1,7 +1,7 @@
 from .person import Person
 from pydantic import Field
 
-class Alumno(Person):
+class Student(Person):
     matricula: str = Field('')
     promedio: float = Field(0)
     fotoPerfilUrl: str | None = None
